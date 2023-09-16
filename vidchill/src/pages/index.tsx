@@ -1,8 +1,8 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import Button from "~/Components/Button";
-import { Navbar } from "~/Components/Component";
+import Button from "~/Components/Buttons/Button";
+import { Navbar, Sidebar } from "~/Components/Component";
 
 import { api } from "~/utils/api";
 
@@ -17,7 +17,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <h1>Hello world</h1>
+      <Sidebar />
     </>
   );
 }

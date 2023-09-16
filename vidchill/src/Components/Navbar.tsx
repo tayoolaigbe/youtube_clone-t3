@@ -1,8 +1,7 @@
-import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useState, Fragment } from "react";
 import {
   DotsVertical,
   File,
@@ -20,7 +19,7 @@ import User from "./Icons/User";
 import { useRouter } from "next/router";
 import { type ChangeEvent, type KeyboardEvent } from "react";
 import { UserImage } from "./VideoComponent";
-import Button from "./Button";
+import Button from "./Buttons/Button";
 
 interface NavbarProps {
   children?: JSX.Element;

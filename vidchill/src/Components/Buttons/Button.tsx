@@ -43,6 +43,7 @@ const Button: FC<ButtonProps> = ({
 
   const buttonClasses = [
     className,
+
     "font-semibold",
     "rounded-lg",
     sizeClasses[size],
