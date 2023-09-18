@@ -1,19 +1,25 @@
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 import {
   ClockRewind,
+  Close,
   Folder,
+  HelpCircle,
   Home,
+  Settings,
   ThumbsUp,
+  User,
   UserCheck,
   VideoRecorder,
 } from "./Icons/Icons";
 import Link from "next/link";
+import { Fragment, useEffect } from "react";
+import { Dialog, Transition } from "@headlessui/react";
 
 interface SidebarProps {
-  // isOpen: boolean;
-  // setSidebarOpen: (open: boolean) => void;
+  isOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
   closeSidebar?: boolean;
 }
 
@@ -27,10 +33,7 @@ interface NavigationItem {
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
-const Sidebar = ({
-  // isOpen, setSidebarOpen,
-  closeSidebar,
-}: SidebarProps) => {
+const Sidebar = ({ isOpen, setSidebarOpen, closeSidebar }: SidebarProps) => {
   const { data: sessionData } = useSession();
   const userId = sessionData?.user.id;
 
@@ -74,6 +77,38 @@ const Sidebar = ({
       current: router.pathname === `/${String(userId)}/ProfileFollowing`,
     },
   ];
+
+  const SignedInMobileNavigation: NavigationItem[] = [
+    {
+      name: "Profile",
+      path: `/${String(userId)}/ProfileVideos`,
+      icon: (className) => <User className={className} />,
+      current: router.pathname === "/Profile",
+    },
+  ];
+
+  const SignedOutMobileNavigation: NavigationItem[] = [
+    {
+      name: "Help",
+      path: `/Blog/Help`,
+      icon: (className) => <HelpCircle className={className} />,
+      current: router.pathname === "/Blog/Help",
+    },
+  ];
+
+  const mobileNavigation = sessionData
+    ? SignedInMobileNavigation
+    : SignedOutMobileNavigation;
+
+  useEffect(() => {
+    DesktopNavigation.forEach((nav) => {
+      nav.current = nav.path === router.pathname;
+    });
+    mobileNavigation.forEach((nav) => {
+      nav.current = nav.path === router.pathname;
+    });
+  }, [router.pathname]);
+
   return (
     <>
       <div
@@ -111,11 +146,89 @@ const Sidebar = ({
                   ))}
                 </ul>
               </li>
-              <li className="mt-auto"></li>
+              <li className="mt-auto">
+                <Link
+                  href="#"
+                  className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-primary-600"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    {
+                      sessionData
+                        ? void router.push("/Settings")
+                        : void signIn();
+                    }
+                  }}
+                >
+                  <Settings
+                    className={
+                      "h-5 w-5 shrink-0 stroke-gray-500 group-hover:stroke-primary-600"
+                    }
+                  />
+                  <p className={classNames(closeSidebar ? "hidden" : "")}>
+                    Settings
+                  </p>
+                </Link>
+                <Link
+                  href="/Blog/Help"
+                  className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-primary-600"
+                >
+                  <HelpCircle
+                    className={
+                      "h-5 w-5 shrink-0 stroke-gray-500 group-hover:stroke-primary-600"
+                    }
+                  />
+                  <p className={classNames(closeSidebar ? "hidden" : "")}>
+                    Help
+                  </p>
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
       </div>
+      <Transition.Root show={isOpen} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-50 lg:hidden"
+          onClose={setSidebarOpen}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="transition-opacity ease-linear duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity ease-linear duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-gray-900/80" />
+          </Transition.Child>
+          <div className=" fixed inset-0 flex">
+            <Transition.Child
+              as={Fragment}
+              enter="transition-opacity ease-linear duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="transition-opacity ease-linear duration-300"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
+                <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
+                  <button
+                    type="button"
+                    className="-m-2.5 p-2.5"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <span className="sr-only">Cloase Sidebar</span>
+                    <Close className="h-6 w-6" aria-hidden="true" />
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </>
   );
 };
