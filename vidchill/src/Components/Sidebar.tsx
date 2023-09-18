@@ -2,11 +2,17 @@ import { useRouter } from "next/router";
 import { signIn, useSession } from "next-auth/react";
 
 import {
+  Brush,
   ClockRewind,
   Close,
+  File,
   Folder,
   HelpCircle,
   Home,
+  Lock,
+  LogOut,
+  Logo,
+  MessagePlusSquare,
   Settings,
   ThumbsUp,
   User,
@@ -16,6 +22,8 @@ import {
 import Link from "next/link";
 import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { UserImage } from "./VideoComponent";
+import Button from "./Buttons/Button";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -83,7 +91,31 @@ const Sidebar = ({ isOpen, setSidebarOpen, closeSidebar }: SidebarProps) => {
       name: "Profile",
       path: `/${String(userId)}/ProfileVideos`,
       icon: (className) => <User className={className} />,
-      current: router.pathname === "/Profile",
+      current: router.pathname === `/Profile`,
+    },
+    {
+      name: "Creator Studio",
+      path: `/Dashboard`,
+      icon: (className) => <Brush className={className} />,
+      current: router.pathname === `/CreatorStudio`,
+    },
+    {
+      name: "Help",
+      path: `/Blog/Help`,
+      icon: (className) => <HelpCircle className={className} />,
+      current: router.pathname === `/Blog/Help`,
+    },
+    {
+      name: "Settings",
+      path: `/Settings`,
+      icon: (className) => <Settings className={className} />,
+      current: router.pathname === `/Settings`,
+    },
+    {
+      name: "Feedback",
+      path: `mailto:vidchill@vidchill.com`,
+      icon: (className) => <MessagePlusSquare className={className} />,
+      current: router.pathname === `/Feedback`,
     },
   ];
 
@@ -93,6 +125,12 @@ const Sidebar = ({ isOpen, setSidebarOpen, closeSidebar }: SidebarProps) => {
       path: `/Blog/Help`,
       icon: (className) => <HelpCircle className={className} />,
       current: router.pathname === "/Blog/Help",
+    },
+    {
+      name: "Feedback",
+      path: `mailto:lohmanlaurie86@gmail.com`,
+      icon: (className) => <MessagePlusSquare className={className} />,
+      current: router.pathname === "/Feedback",
     },
   ];
 
@@ -223,6 +261,119 @@ const Sidebar = ({ isOpen, setSidebarOpen, closeSidebar }: SidebarProps) => {
                     <span className="sr-only">Cloase Sidebar</span>
                     <Close className="h-6 w-6" aria-hidden="true" />
                   </button>
+                </div>
+                <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
+                  <nav className="flex flex-1 flex-col pt-4">
+                    <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                      <Logo className="w-24" />
+                      <li className="border-t">
+                        <ul role="list" className="-mx-2 space-y-1  pt-3 ">
+                          {mobileNavigation.map((item) => (
+                            <li key={item.name}>
+                              <Link
+                                href={item.path ?? "/"}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  void router.push(item.path ?? "/");
+                                }}
+                                className={classNames(
+                                  item.current
+                                    ? " bg-gray-50 text-primary-600"
+                                    : " text-gray-700 hover:bg-gray-50 hover:text-primary-600",
+                                  "group flex gap-x-3 rounded-md px-2 py-1.5 text-sm font-semibold leading-6",
+                                )}
+                              >
+                                {item.current
+                                  ? item.icon(
+                                      "h-5 w-5 shrink-0 stroke-primary-600",
+                                    )
+                                  : item.icon(
+                                      "h-5 w-5 shrink-0  stroke-gray-500  group-hover:stroke-primary-600",
+                                    )}
+                                {item.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </li>
+
+                      <li className="mt-auto border-b ">
+                        <Link
+                          href="/Blog/Privacy"
+                          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-primary-600"
+                        >
+                          <Lock
+                            className={
+                              "h-5 w-5 shrink-0 stroke-gray-500 group-hover:stroke-primary-600"
+                            }
+                          />
+                          Privacy
+                        </Link>
+                        <Link
+                          href="/Blog/TOS"
+                          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-50 hover:text-primary-600"
+                        >
+                          <File
+                            className={
+                              "h-5 w-5 shrink-0 stroke-gray-500 group-hover:stroke-primary-600"
+                            }
+                          />
+                          Terms of Service
+                        </Link>
+                      </li>
+                      {sessionData ? (
+                        <div className="my-2 flex flex-row bg-blue-300">
+                          <UserImage image={sessionData?.user.image ?? ""} />
+                          <div className="ml-2 flex w-full flex-col  justify-start truncate text-sm ">
+                            <p className="font-semibold text-gray-700">
+                              {sessionData && (
+                                <span>{sessionData.user?.name}</span>
+                              )}
+                            </p>
+                            <p className=" text-gray-600">
+                              {sessionData && (
+                                <span>{sessionData.user?.email}</span>
+                              )}
+                            </p>
+                          </div>
+                          <Button variant="tertiary-gray" href="#" size="lg">
+                            <LogOut className="w-5 stroke-gray-600" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <li className="space-y-2">
+                          <Button
+                            variant="primary"
+                            size="2xl"
+                            className="w-full"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              {
+                                void signIn();
+                              }
+                            }}
+                          >
+                            {" "}
+                            Sign Up
+                          </Button>
+                          <Button
+                            variant="secondary-gray"
+                            size="2xl"
+                            className="w-full"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              {
+                                void signIn();
+                              }
+                            }}
+                          >
+                            {" "}
+                            Log In
+                          </Button>
+                        </li>
+                      )}
+                    </ul>
+                  </nav>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
