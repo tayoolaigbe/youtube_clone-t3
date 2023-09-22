@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Menu from "./Icons/Menu";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+import { Footer, Sidebar, Navbar } from "./Component";
 
 interface LayoutProps {
   children: JSX.Element;
@@ -30,6 +29,10 @@ const Layout = ({ children, closeSidebar }: LayoutProps) => {
         closeSidebar={closeSidebar}
         setSidebarOpen={setSidebarOpen}
       ></Sidebar>
+
+      <div className="lg:hidden">
+        <Footer />{" "}
+      </div>
       <div className={classNames(closeSidebar ? "lg:pl-20" : "lg:pl-56")}>
         <main className="py-24">
           <div className=" mx-auto px-4 sm:px-6 lg:px-8">
