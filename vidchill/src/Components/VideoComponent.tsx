@@ -59,6 +59,71 @@ export const MultiColumnVideo: React.FC<VideoComponentProps> = ({
   );
 };
 
+export const SingleColumnVideo: React.FC<VideoComponentProps> = ({
+  videos,
+  users,
+}) => (
+  <div>
+    {videos.map((video, index) => {
+      const user = users[index];
+      if (!user) {
+        return null;
+      }
+      return (
+        <Link href={`/video/${video.id}`} key={video.id}>
+          <div className="my-5 flex flex-col gap-4 hover:bg-gray-100 lg:flex-row">
+            <div className="relative aspect-[16/9] sm:aspect-[2/1] lg:w-64 lg:shrink-0">
+              <Thumbnail thumbnailUrl={video.thumbnailUrl} />
+            </div>
+            <div>
+              <VideoTitle title={video.title} />
+              <VideoInfo views={video.views} createdAt={video.createdAt} />
+
+              <div className="relative mt-2 flex flex-row items-center gap-x-4">
+                <UserImage image={user.image || ""} />
+                <UserName name={user.name || ""} />
+              </div>
+            </div>
+          </div>
+        </Link>
+      );
+    })}
+  </div>
+);
+
+export const SmallSingleColumnVideo: React.FC<VideoComponentProps> = ({
+  videos,
+  users,
+  refetch,
+}) => (
+  <>
+    {videos.map((video, index) => {
+      const user = users[index];
+      if (!user) {
+        return null;
+      }
+      return (
+        <Link href={`/video/${video.id}`} key={video.id} onClick={refetch}>
+          <div className=" relative isolate my-4 flex flex-col gap-4 rounded-2xl border hover:bg-gray-100 lg:flex-row ">
+            <div className=" aspect-[16/9] sm:aspect-[2/1] lg:w-52  lg:shrink-0">
+              <Thumbnail thumbnailUrl={video.thumbnailUrl} />
+            </div>
+            <div className="mt-2 flex w-full flex-col items-start overflow-hidden text-xs  max-lg:mx-2">
+              <VideoTitle
+                title={video.title}
+                limitHeight={true}
+                limitSize={true}
+              />
+              <VideoInfo views={video.views} createdAt={video.createdAt} />
+              <UserName name={user.name || ""} />
+            </div>
+          </div>
+        </Link>
+      );
+    })}
+  </>
+);
+
 export function VideoTitle({
   title,
   limitHeight,
