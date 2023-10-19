@@ -1,4 +1,5 @@
 import { EngagementType } from "@prisma/client";
+import { CssSyntaxError } from "postcss";
 import { z } from "zod";
 
 import {
@@ -8,6 +9,62 @@ import {
 } from "~/server/api/trpc";
 
 export const videoRouter = createTRPCRouter({
+  getVideoById: publicProcedure
+    .input(z.object({ id: z.string(), viewerId: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      const rawVideo = await ctx.prisma.video.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          user: true,
+          comments: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      });
+      if (!rawVideo) {
+        throw new Error("Video not found");
+      }
+      const { user, comments, ...video } = rawVideo;
+      const followers = await ctx.prisma.followEngagement.count({
+        where: {
+          followerId: video.userId,
+        },
+      });
+      const likes = await ctx.prisma.videoEngagement.count({
+        where: {
+          videoId: video.id,
+          engagementType: EngagementType.LIKE,
+        },
+      });
+      const dislikes = await ctx.prisma.videoEngagement.count({
+        where: {
+          videoId: video.id,
+          engagementType: EngagementType.DISLIKE,
+        },
+      });
+      const views = await ctx.prisma.videoEngagement.count({
+        where: {
+          videoId: video.id,
+          engagementType: EngagementType.VIEW,
+        },
+      });
+      const userWithFollowers = { ...user, followers };
+      const videoWithLikesDislikesViews = { ...video, likes, dislikes, views };
+      const commentsWithUsers = comments.map(({ user, ...comment }) => ({
+        user,
+        comment,
+      }));
+
+      return {
+        video: videoWithLikesDislikesViews,
+        user: userWithFollowers,
+        comments: commentsWithUsers,
+      };
+    }),
   getRandomVideos: publicProcedure
     .input(z.number())
     .query(async ({ ctx, input }) => {
