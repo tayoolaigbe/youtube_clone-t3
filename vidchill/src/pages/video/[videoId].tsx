@@ -3,7 +3,12 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import ReactPlayer from "react-player";
 import { useRouter } from "next/router";
-import { LoadingMessage, Layout, ErrorMessage } from "~/Components/Component";
+import {
+  LoadingMessage,
+  Layout,
+  ErrorMessage,
+  SmallSingleColumnVideo,
+} from "~/Components/Component";
 
 import { api } from "~/utils/api";
 import { useEffect } from "react";
@@ -103,7 +108,27 @@ const VideoPage: NextPage = () => {
               </div>
             </>
           )}
-          <div className="px-4 lg:w-2/5 lg:px-0"></div>
+          <div className="px-4 lg:w-2/5 lg:px-0">
+            {!sidebarVideos ? (
+              <DataError />
+            ) : (
+              <>
+                <SmallSingleColumnVideo
+                  videos={sidebarVideos?.videos.map((video) => ({
+                    id: video?.id ?? "",
+                    title: video?.title ?? "",
+                    thumbnailUrl: video?.thumbnailUrl ?? "",
+                    createdAt: video?.createdAt ?? new Date(),
+                    views: video?.views ?? 0,
+                  }))}
+                  users={sidebarVideos?.users.map((user) => ({
+                    name: user?.name ?? "",
+                    image: user?.image ?? "",
+                  }))}
+                />
+              </>
+            )}
+          </div>
         </main>
       </Layout>
     </>

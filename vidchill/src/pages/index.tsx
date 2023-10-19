@@ -43,7 +43,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout closeSidebar={true}>
-        {!data ?? error ? (
+        {!data ? (
           <Error />
         ) : (
           <>
