@@ -10,10 +10,13 @@ import {
   SmallSingleColumnVideo,
   VideoTitle,
   VideoInfo,
+  UserImage,
+  UserName,
 } from "~/Components/Component";
 
 import { api } from "~/utils/api";
 import { useEffect } from "react";
+import Link from "next/link";
 
 const VideoPage: NextPage = () => {
   const router = useRouter();
@@ -118,6 +121,23 @@ const VideoPage: NextPage = () => {
                           createdAt={video.createdAt}
                         />
                       </div>
+                    </div>
+                    <div className="flex flex-row place-content-between gap-x-4">
+                      <Link
+                        href={`/${video.userId}/ProfileVideos`}
+                        key={video.userId}
+                      >
+                        <div className="flex flex-row gap-2">
+                          <UserImage image={user.image ?? ""} />
+                          <button className="flex flex-col">
+                            <UserName name={user.name ?? ""} />
+                            <p className="text-sm text-gray-600">
+                              {user.followers}
+                              <span> Followers</span>
+                            </p>
+                          </button>
+                        </div>
+                      </Link>
                     </div>
                   </div>
                 </div>
