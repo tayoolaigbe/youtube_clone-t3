@@ -8,6 +8,8 @@ import {
   Layout,
   ErrorMessage,
   SmallSingleColumnVideo,
+  VideoTitle,
+  VideoInfo,
 } from "~/Components/Component";
 
 import { api } from "~/utils/api";
@@ -41,18 +43,19 @@ const VideoPage: NextPage = () => {
   } = api.video.getRandomVideos.useQuery(20, {
     enabled: false, // this query will not run automatically
   });
-  // const addViewMutation = api.videoEngagement.addViewCount.useMutation();
-  // const addView = (input: { id: string; userId: string }) => {
-  //   addViewMutation.mutate(input);
-  // };
+
+  const addViewMutation = api.videoEngagement.addViewCount.useMutation();
+  const addView = (input: { id: string; userId: string }) => {
+    addViewMutation.mutate(input);
+  };
 
   useEffect(() => {
     if (videoId) {
       void refetchVideoData();
-      // addView({
-      //   id: videoId as string,
-      //   userId: sessionData ? sessionData.user.id : " ",
-      // });
+      addView({
+        id: videoId as string,
+        userId: sessionData ? sessionData.user.id : " ",
+      });
     }
   }, [videoId]);
 
@@ -104,6 +107,19 @@ const VideoPage: NextPage = () => {
                     height={"50%"}
                     url={video?.videoUrl ?? ""}
                   />
+                </div>
+                <div className="flex space-x-3 rounded-2xl border border-x-gray-200 p-4 shadow-sm">
+                  <div className="min-w-0 flex-1 space-y-3">
+                    <div className="xs:flex-wrap flex flex-row justify-between gap-4 max-md:flex-wrap">
+                      <div className="flex flex-col items-start justify-center gap-1 self-stretch ">
+                        <VideoTitle title={video.title} />
+                        <VideoInfo
+                          views={video.views}
+                          createdAt={video.createdAt}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </>

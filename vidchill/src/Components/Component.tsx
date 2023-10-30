@@ -13,5 +13,4 @@ export {
   UserImage,
   UserName,
 } from "./VideoComponent";
-export { ErrorMessage } from "./ErrorMessage";
-export { LoadingMessage } from "./ErrorMessage";
+export { LoadingMessage, ErrorMessage } from "./ErrorMessage";
