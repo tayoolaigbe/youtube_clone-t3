@@ -1,14 +1,6 @@
-import { NextPage } from "next";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { type NextPage } from "next";
 import Head from "next/head";
-import Link from "next/link";
-import Button from "~/Components/Buttons/Button";
-import {
-  Navbar,
-  Sidebar,
-  Layout,
-  MultiColumnVideo,
-} from "~/Components/Component";
+import { Layout, MuliColumnVideo } from "~/Components/Component";
 import { ErrorMessage, LoadingMessage } from "~/Components/ErrorMessage";
 
 import { api } from "~/utils/api";
@@ -47,7 +39,7 @@ const Home: NextPage = () => {
           <Error />
         ) : (
           <>
-            <MultiColumnVideo
+            <MuliColumnVideo
               videos={data?.videos.map((video) => ({
                 id: video?.id ?? "",
                 title: video?.title ?? "",

@@ -3,11 +3,7 @@ import { z } from "zod";
 type Context = {
   prisma: PrismaClient;
 };
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 async function getOrCreatePlaylist(
   ctx: Context,

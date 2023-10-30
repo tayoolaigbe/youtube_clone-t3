@@ -4,7 +4,7 @@ export { default as Layout } from "./Layout";
 export { default as Footer } from "./Footer";
 export { Thumbnail } from "./Thumbnail";
 export {
-  MultiColumnVideo,
+  MuliColumnVideo,
   SingleColumnVideo,
   SmallSingleColumnVideo,
   VideoDescription,
@@ -13,4 +13,5 @@ export {
   UserImage,
   UserName,
 } from "./VideoComponent";
+
 export { LoadingMessage, ErrorMessage } from "./ErrorMessage";

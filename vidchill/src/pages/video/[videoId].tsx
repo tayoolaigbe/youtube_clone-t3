@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import ReactPlayer from "react-player";
@@ -17,6 +17,7 @@ import {
 import { api } from "~/utils/api";
 import { useEffect } from "react";
 import Link from "next/link";
+import FollowButton from "~/Components/Buttons/FollowButton";
 
 const VideoPage: NextPage = () => {
   const router = useRouter();
@@ -70,9 +71,8 @@ const VideoPage: NextPage = () => {
 
   const video = videoData?.video;
   const user = videoData?.user;
-  // const viewer = videoData?.viewer;
-  const errorTypes = !videoData || !user || !video;
-
+  const viewer = videoData?.viewer;
+  const errorTypes = !videoData || !user || !video || !viewer;
   const DataError = () => {
     if (videoLoading) {
       return <LoadingMessage />;
@@ -115,7 +115,7 @@ const VideoPage: NextPage = () => {
                   <div className="min-w-0 flex-1 space-y-3">
                     <div className="xs:flex-wrap flex flex-row justify-between gap-4 max-md:flex-wrap">
                       <div className="flex flex-col items-start justify-center gap-1 self-stretch ">
-                        <VideoTitle title={video.title} />
+                        <VideoTitle title={video.title ?? ""} />{" "}
                         <VideoInfo
                           views={video.views}
                           createdAt={video.createdAt}
@@ -138,6 +138,10 @@ const VideoPage: NextPage = () => {
                           </button>
                         </div>
                       </Link>
+                      <FollowButton
+                        followingId={user.id}
+                        viewer={{ hasFollowed: viewer.hasFollowed }}
+                      />
                     </div>
                   </div>
                 </div>

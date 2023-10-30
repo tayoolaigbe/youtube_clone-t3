@@ -1,11 +1,7 @@
 import { EngagementType } from "@prisma/client";
 import { z } from "zod";
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const videoRouter = createTRPCRouter({
   getVideoById: publicProcedure
@@ -58,10 +54,26 @@ export const videoRouter = createTRPCRouter({
         comment,
       }));
 
+      let viewerHasFollowed = false;
+      if (input.viewerId && input.viewerId !== "") {
+        viewerHasFollowed = !!(await ctx.prisma.followEngagement.findFirst({
+          where: {
+            followingId: rawVideo.userId,
+            followerId: input.viewerId,
+          },
+        }));
+      } else {
+        viewerHasFollowed = false;
+      }
+      const viewer = {
+        hasFollowed: viewerHasFollowed,
+      };
+
       return {
         video: videoWithLikesDislikesViews,
         user: userWithFollowers,
         comments: commentsWithUsers,
+        viewer,
       };
     }),
   getRandomVideos: publicProcedure
