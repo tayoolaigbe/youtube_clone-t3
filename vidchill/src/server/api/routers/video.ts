@@ -55,7 +55,24 @@ export const videoRouter = createTRPCRouter({
       }));
 
       let viewerHasFollowed = false;
+      let viewerHasLiked = false;
+      let viewerHasDisliked = false;
+
       if (input.viewerId && input.viewerId !== "") {
+        viewerHasLiked = !!(await ctx.prisma.videoEngagement.findFirst({
+          where: {
+            videoId: input.id,
+            userId: input.viewerId,
+            engagementType:EngagementType.LIKE
+          }
+        }))
+        viewerHasDisliked = !!(await ctx.prisma.videoEngagement.findFirst({
+          where: {
+            videoId: input.id,
+            userId: input.viewerId,
+            engagementType:EngagementType.DISLIKE
+          }
+        }))
         viewerHasFollowed = !!(await ctx.prisma.followEngagement.findFirst({
           where: {
             followingId: rawVideo.userId,
@@ -63,10 +80,15 @@ export const videoRouter = createTRPCRouter({
           },
         }));
       } else {
+        viewerHasLiked = false;
+        viewerHasDisliked = false;
         viewerHasFollowed = false;
       }
       const viewer = {
+        hasLiked: viewerHasLiked,
+        hasDisliked: viewerHasDisliked,
         hasFollowed: viewerHasFollowed,
+
       };
 
       return {
