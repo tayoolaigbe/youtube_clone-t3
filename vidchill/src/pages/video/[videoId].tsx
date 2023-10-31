@@ -17,7 +17,7 @@ import {
 import { api } from "~/utils/api";
 import { useEffect } from "react";
 import Link from "next/link";
-import FollowButton from "~/Components/Buttons/FollowButton";
+import { FollowButton, LikeDislikeButton } from "~/Components/Buttons/Buttons";
 
 const VideoPage: NextPage = () => {
   const router = useRouter();
@@ -119,6 +119,19 @@ const VideoPage: NextPage = () => {
                         <VideoInfo
                           views={video.views}
                           createdAt={video.createdAt}
+                        />
+                      </div>
+                      <div className="flex-inline flex items-end justify-start gap-4 self-start">
+                        <LikeDislikeButton
+                          EngagementData={{
+                            id: video.id,
+                            likes: video.likes,
+                            dislikes: video.dislikes,
+                          }}
+                          viewer={{
+                            hasLiked: viewer.hasLiked,
+                            hasDisliked: viewer.hasDisliked,
+                          }}
                         />
                       </div>
                     </div>
