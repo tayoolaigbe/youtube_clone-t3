@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ChevronDown, ChevronUp } from "./Icons/Chevron";
 
 const Description = ({
   text,
@@ -40,6 +41,9 @@ const Description = ({
             >
               {text}
             </p>
+            <span className="items-end">
+              {isExpanded ? <ChevronUp /> : <ChevronDown />}
+            </span>
           </button>
         </div>
       </>
