@@ -13,6 +13,7 @@ import {
   UserImage,
   UserName,
   Description,
+  CommentSection,
 } from "~/Components/Component";
 
 import { api } from "~/utils/api";
@@ -164,6 +165,23 @@ const VideoPage: NextPage = () => {
                     />
                   </div>
                 </div>
+                <CommentSection
+                  videoId={videoId}
+                  comments={videoData.comments.map(({ user, comment }) => ({
+                    comment: {
+                      id: comment.id,
+                      message: comment.message,
+                      createdAt: comment.createdAt,
+                    },
+                    user: {
+                      id: user.id,
+                      name: user.name,
+                      image: user.image,
+                      handle: user.handle,
+                    },
+                  }))}
+                  refetch={refetchVideoData}
+                />
               </div>
             </>
           )}
