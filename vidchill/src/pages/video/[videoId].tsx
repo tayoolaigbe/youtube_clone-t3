@@ -12,6 +12,7 @@ import {
   VideoInfo,
   UserImage,
   UserName,
+  Description,
 } from "~/Components/Component";
 
 import { api } from "~/utils/api";
@@ -156,6 +157,11 @@ const VideoPage: NextPage = () => {
                         viewer={{ hasFollowed: viewer.hasFollowed }}
                       />
                     </div>
+                    <Description
+                      text={video.description}
+                      length={200}
+                      border={true}
+                    />
                   </div>
                 </div>
               </div>
