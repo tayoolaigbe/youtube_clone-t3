@@ -1,7 +1,11 @@
 import { EngagementType } from "@prisma/client";
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const videoRouter = createTRPCRouter({
   getVideoById: publicProcedure
@@ -63,16 +67,16 @@ export const videoRouter = createTRPCRouter({
           where: {
             videoId: input.id,
             userId: input.viewerId,
-            engagementType:EngagementType.LIKE
-          }
-        }))
+            engagementType: EngagementType.LIKE,
+          },
+        }));
         viewerHasDisliked = !!(await ctx.prisma.videoEngagement.findFirst({
           where: {
             videoId: input.id,
             userId: input.viewerId,
-            engagementType:EngagementType.DISLIKE
-          }
-        }))
+            engagementType: EngagementType.DISLIKE,
+          },
+        }));
         viewerHasFollowed = !!(await ctx.prisma.followEngagement.findFirst({
           where: {
             followingId: rawVideo.userId,
@@ -88,7 +92,6 @@ export const videoRouter = createTRPCRouter({
         hasLiked: viewerHasLiked,
         hasDisliked: viewerHasDisliked,
         hasFollowed: viewerHasFollowed,
-
       };
 
       return {
@@ -182,5 +185,33 @@ export const videoRouter = createTRPCRouter({
         }),
       );
       return { videos: videosWithCounts, users: users };
+    }),
+  addVideoToPlaylist: protectedProcedure
+    .input(z.object({ playlistId: z.string(), videoId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const playlistAlreadyHasVideo =
+        await ctx.prisma.playlistHasVideo.findMany({
+          where: {
+            playlistId: input.playlistId,
+            videoId: input.videoId,
+          },
+        });
+      if (playlistAlreadyHasVideo.length > 0) {
+        const deleteVideo = await ctx.prisma.playlistHasVideo.deleteMany({
+          where: {
+            playlistId: input.playlistId,
+            videoId: input.videoId,
+          },
+        });
+        return deleteVideo;
+      } else {
+        const playlistHasVideo = await ctx.prisma.playlistHasVideo.create({
+          data: {
+            playlistId: input.playlistId,
+            videoId: input.videoId,
+          },
+        });
+        return playlistHasVideo;
+      }
     }),
 });
