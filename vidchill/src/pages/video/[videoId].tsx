@@ -19,7 +19,11 @@ import {
 import { api } from "~/utils/api";
 import { useEffect } from "react";
 import Link from "next/link";
-import { FollowButton, LikeDislikeButton } from "~/Components/Buttons/Buttons";
+import {
+  FollowButton,
+  LikeDislikeButton,
+  SaveButton,
+} from "~/Components/Buttons/Buttons";
 
 const VideoPage: NextPage = () => {
   const router = useRouter();
@@ -135,6 +139,7 @@ const VideoPage: NextPage = () => {
                             hasDisliked: viewer.hasDisliked,
                           }}
                         />
+                        <SaveButton videoId={video.id} />
                       </div>
                     </div>
                     <div className="flex flex-row place-content-between gap-x-4">
