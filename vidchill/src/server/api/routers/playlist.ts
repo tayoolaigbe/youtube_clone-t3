@@ -7,6 +7,53 @@ import {
 } from "~/server/api/trpc";
 
 export const playlistRouter = createTRPCRouter({
+  getPlaylistByUserId: publicProcedure
+    .input(z.string())
+    .query(async ({ ctx, input }) => {
+      const rawPlaylists = await ctx.prisma.playlist.findMany({
+        where: {
+          userId: input,
+        },
+        include: {
+          user: true,
+          videos: {
+            include: {
+              video: true,
+            },
+          },
+        },
+      });
+      const playlists = await Promise.all(
+        rawPlaylists.map(async (playlist) => {
+          const videoCount = await ctx.prisma.playlistHasVideo.count({
+            where: {
+              playlistId: playlist.id,
+            },
+          });
+
+          const firstVideoInPlaylist =
+            await ctx.prisma.playlistHasVideo.findFirst({
+              where: {
+                playlistId: playlist.id,
+              },
+              include: {
+                video: {
+                  select: {
+                    thumbnailUrl: true,
+                  },
+                },
+              },
+            });
+
+          return {
+            ...playlist,
+            videoCount,
+            playlistThumbnail: firstVideoInPlaylist?.video?.thumbnailUrl,
+          };
+        }),
+      );
+      return playlists;
+    }),
   getSavePlaylistData: protectedProcedure
     .input(z.string())
     .query(async ({ ctx, input }) => {
