@@ -5,6 +5,8 @@ import { ErrorMessage, LoadingMessage } from "~/Components/ErrorMessage";
 import { api } from "~/utils/api";
 import { UserImage } from "./Component";
 import Image from "next/image";
+import { Button, FollowButton } from "./Buttons/Buttons";
+import { Edit } from "./Icons/Icons";
 
 const ProfileHeader = () => {
   const router = useRouter();
@@ -65,19 +67,41 @@ const ProfileHeader = () => {
                   image={channel.image ?? ""}
                 />
               </div>
-              <div className=" mt-6 min-w-0 flex-1 md:block">
-                <h1 className="truncate text-2xl font-bold text-gray-900">
-                  {channel.name}
-                </h1>
-                <p className="text-regular text-gray-600">{channel.handle}</p>
-                <div className="mt-1 flex items-center text-xs">
-                  <p className="text-sm text-gray-600">
-                    {channel.followers} Followers
-                  </p>
-                  <li className="pl-2 text-sm text-gray-500"></li>
-                  <p className="text-sm text-gray-600">
-                    {channel.followings} Following
-                  </p>
+              <div className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
+                <div className=" mt-6 min-w-0 flex-1 md:block">
+                  <h1 className="truncate text-2xl font-bold text-gray-900">
+                    {channel.name}
+                  </h1>
+                  <p className="text-regular text-gray-600">{channel.handle}</p>
+                  <div className="mt-1 flex items-center text-xs">
+                    <p className="text-sm text-gray-600">
+                      {channel.followers} Followers
+                    </p>
+                    <li className="pl-2 text-sm text-gray-500"></li>
+                    <p className="text-sm text-gray-600">
+                      {channel.followings} Following
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-stretch space-y-3 sm:space-x-4 sm:space-y-0">
+                  {userId == sessionData?.user.id ? (
+                    <Button
+                      variant="primary"
+                      className="ml-2 flex"
+                      size="2xl"
+                      href="/Settings"
+                    >
+                      <Edit className="mr-2 h-5 w-5 shrink-0 stroke-white" />
+                      Edit
+                    </Button>
+                  ) : (
+                    <FollowButton
+                      followingId={userId as string}
+                      viewer={{
+                        hasFollowed: viewer.hasFollowed,
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
