@@ -7,6 +7,8 @@ import { UserImage } from "./Component";
 import Image from "next/image";
 import { Button, FollowButton } from "./Buttons/Buttons";
 import { Edit } from "./Icons/Icons";
+import { useEffect } from "react";
+import Link from "next/link";
 
 const ProfileHeader = () => {
   const router = useRouter();
@@ -25,6 +27,40 @@ const ProfileHeader = () => {
   const channel = data?.user;
   const viewer = data?.viewer;
   const errorTypes = !channel || !viewer || error || !data;
+
+  const tabs = [
+    {
+      name: "Videos",
+      path: `/${String(userId)}/ProfileVideos`,
+      current: router.pathname === `/[userId]/ProfileVideos`,
+    },
+
+    {
+      name: "Playlists",
+      path: `/${String(userId)}/ProfilePlaylists`,
+      current: router.pathname === `/[userId]/ProfilePlaylists`,
+    },
+    {
+      name: "Annoucements",
+      path: `/${String(userId)}/ProfileAnnouncements`,
+      current: router.pathname === `/[userId]/ProfileAnnouncements`,
+    },
+    {
+      name: "Following",
+      path: `/${String(userId)}/ProfileFollowing`,
+      current: router.pathname === `/[userId]/ProfileFollowing`,
+    },
+  ];
+
+  function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(" ");
+  }
+
+  useEffect(() => {
+    tabs.forEach((tab) => {
+      tab.current = tab.path === router.pathname;
+    });
+  }, [router.pathname]);
 
   const Error = () => {
     if (isLoading) {
@@ -105,6 +141,32 @@ const ProfileHeader = () => {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="mb-8 mt-4 h-16 overflow-x-auto  border-b border-gray-200">
+            <nav
+              className=" -mb-px flex min-w-max whitespace-nowrap"
+              aria-label="Tabs"
+            >
+              {tabs.map((tab) => (
+                <Link
+                  key={tab.name}
+                  href={tab.path}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    void router.push(tab.path);
+                  }}
+                  className={classNames(
+                    tab.current
+                      ? "border-primary-500 bg-primary-50 text-primary-600"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700",
+                    "  w-full border-b-4  px-1 py-4 text-center text-sm font-medium ",
+                  )}
+                  aria-current={tab.current ? "page" : undefined}
+                >
+                  {tab.name}
+                </Link>
+              ))}
+            </nav>
           </div>
         </>
       )}
