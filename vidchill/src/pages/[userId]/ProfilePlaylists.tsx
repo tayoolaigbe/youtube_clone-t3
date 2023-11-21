@@ -33,20 +33,20 @@ const ProfilePlaylists: NextPage = () => {
         />
       );
     } else {
-      return (
-        <>
-          <Layout>
-            <>
-              <ProfileHeader />
-              {errorTypes ? <Error /> : <>Playlist</>}
-            </>
-          </Layout>
-        </>
-      );
+      return <></>;
     }
   };
 
-  return <div>This is ProfilePlaylists</div>;
+  return (
+    <>
+      <Layout>
+        <>
+          <ProfileHeader />
+          {errorTypes ? <Error /> : <>Playlist</>}
+        </>
+      </Layout>
+    </>
+  );
 };
 
 export default ProfilePlaylists;
