@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Thumbnail } from "./Thumbnail";
 import moment from "moment";
+import Head from "next/head";
+import { SmallSingleColumnVideo } from "./VideoComponent";
 
 interface PlaylistPageProps {
   playlist: {
@@ -30,14 +32,44 @@ interface PlaylistPageProps {
     followers: number;
   };
 }
-// export const PlaylistPage: React.FC<PlaylistPageProps> = ( playlist,
-//   videos,
-//   authors,
-//   user,) => {
-//     if (!playlist || !videos || !authors || !user) {
-//       return <></>;
-//     }
-//   }
+export const PlaylistPage: React.FC<PlaylistPageProps> = ({
+  playlist,
+  videos,
+  authors,
+  user,
+}) => {
+  if (!playlist || !videos || !authors || !user) {
+    return <></>;
+  }
+  return (
+    <>
+      <Head>
+        <title>{playlist?.title ? playlist?.title + " - VidChill" : ""}</title>
+        <meta name="description" content={playlist?.description || ""} />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main className="mx-auto gap-4 lg:flex">
+        <div className="lg:w-1/2 lg:px-0 lg:pl-6"></div>
+        <div className="gap-4 lg:w-1/2 lg:px-0 lg:pr-6">
+          <SmallSingleColumnVideo
+            users={authors.map((author) => ({
+              id: author?.id || "",
+              name: author?.name || "",
+              image: author?.image || "",
+            }))}
+            videos={videos.map((video) => ({
+              id: video?.id ?? "",
+              title: video?.title ?? "",
+              thumbnailUrl: video?.thumbnailUrl ?? "",
+              createdAt: video?.createdAt ?? new Date(),
+              views: video?.views || 0,
+            }))}
+          />
+        </div>
+      </main>
+    </>
+  );
+};
 
 export function MultiColumnPlaylist({
   playlists,

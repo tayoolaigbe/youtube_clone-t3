@@ -28,19 +28,24 @@ export const playlistRouter = createTRPCRouter({
           },
         },
       });
+
       if (!rawPlaylist) {
         throw new Error("Playlist not found");
       }
+
       const followers = await ctx.prisma.followEngagement.count({
         where: {
           followingId: rawPlaylist.userId,
         },
       });
-      const usersWithFollowers = { ...rawPlaylist.user, followers };
+
+      const userWithFollowers = { ...rawPlaylist.user, followers };
+
       const videosWithUser = rawPlaylist.videos.map(({ video }) => ({
         ...video,
         author: video?.user,
       }));
+
       const videos = videosWithUser.map(({ author, ...video }) => video);
       const users = videosWithUser.map(({ user }) => user);
 
@@ -62,10 +67,10 @@ export const playlistRouter = createTRPCRouter({
       const { user, videos: rawVideos, ...playlistInfo } = rawPlaylist;
 
       return {
-        user: usersWithFollowers,
-        videos: videosWithCounts,
         playlist: playlistInfo,
+        videos: videosWithCounts,
         authors: users,
+        user: userWithFollowers,
       };
     }),
   getPlaylistByUserId: publicProcedure
