@@ -19,12 +19,14 @@ const Description = ({
   if (text?.length === 0 || text === null) {
     return null;
   } else if (text?.length < length) {
-    <>
-      {border ? <div className="border-b border-gray-200"></div> : ""}
-      <p className="my-3 text-left text-sm font-semibold text-gray-600">
-        {text}
-      </p>
-    </>;
+    return (
+      <>
+        {border ? <div className="border-b border-gray-200"></div> : ""}
+        <p className="my-3 text-left text-sm font-semibold text-gray-600">
+          {text}
+        </p>
+      </>
+    );
   } else {
     return (
       <>

@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { Thumbnail } from "./Thumbnail";
 import moment from "moment";
 import Head from "next/head";
-import { SmallSingleColumnVideo } from "./VideoComponent";
+import {
+  Description,
+  SmallSingleColumnVideo,
+  UserImage,
+  Thumbnail,
+} from "./Component";
 
 interface PlaylistPageProps {
   playlist: {
@@ -49,7 +53,37 @@ export const PlaylistPage: React.FC<PlaylistPageProps> = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="mx-auto gap-4 lg:flex">
-        <div className="lg:w-1/2 lg:px-0 lg:pl-6"></div>
+        <div className="lg:w-1/2 lg:px-0 lg:pl-6">
+          <SinglePlaylist
+            playlist={{
+              id: playlist?.id || "",
+              title: playlist?.title || "",
+              videoCount: playlist?.videoCount || 0,
+              playlistThumbnail: playlist?.playlistThumbnail ?? "",
+              createdAt: playlist?.createdAt || new Date(),
+            }}
+          />
+          <Description
+            text={playlist.description || ""}
+            length={250}
+            border={false}
+          />
+          <div className="flex flex-row place-content-between gap-x-4">
+            <Link key={user.id} href={`/${user.id}/ProfileVideos`}>
+              <div className="mt-4 flex flex-row gap-2">
+                <UserImage image={user.image || ""} />
+                <div className="flex flex-col">
+                  <p className="w-max text-sm font-semibold leading-6 text-gray-900">
+                    {user.name || ""}
+                  </p>
+                  <p className=" text-sm text-gray-600">
+                    {user.followers} <span> Followers</span>
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
         <div className="gap-4 lg:w-1/2 lg:px-0 lg:pr-6">
           <SmallSingleColumnVideo
             users={authors.map((author) => ({
@@ -57,13 +91,19 @@ export const PlaylistPage: React.FC<PlaylistPageProps> = ({
               name: author?.name || "",
               image: author?.image || "",
             }))}
-            videos={videos.map((video) => ({
-              id: video?.id ?? "",
-              title: video?.title ?? "",
-              thumbnailUrl: video?.thumbnailUrl ?? "",
-              createdAt: video?.createdAt ?? new Date(),
-              views: video?.views || 0,
-            }))}
+            videos={videos
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime(),
+              )
+              .map((video) => ({
+                id: video?.id ?? "",
+                title: video?.title ?? "",
+                thumbnailUrl: video?.thumbnailUrl ?? "",
+                createdAt: video?.createdAt ?? new Date(),
+                views: video?.views || 0,
+              }))}
           />
         </div>
       </main>
@@ -109,7 +149,7 @@ export function SinglePlaylist({
   playlist: {
     id: string;
     title: string;
-    description: string;
+    description?: string;
     videoCount: number;
     playlistThumbnail: string;
     createdAt: Date;
