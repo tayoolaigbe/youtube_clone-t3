@@ -5,6 +5,7 @@ import { LoadingMessage, ErrorMessage } from "~/Components/ErrorMessage";
 import { UserImage, Layout, ProfileHeader } from "~/Components/Component";
 import { api } from "~/utils/api";
 import moment from "moment";
+import AnnouncementButton from "~/Components/Buttons/AnnouncementButton";
 
 const ProfileAnnouncements: NextPage = () => {
   const router = useRouter();
@@ -86,6 +87,17 @@ const ProfileAnnouncements: NextPage = () => {
                           <p className="my-2 text-sm text-gray-600">
                             {announcement.message}
                           </p>
+                          <AnnouncementButton
+                            EngagementData={{
+                              id: announcement.id,
+                              likes: announcement.likes,
+                              dislikes: announcement.dislikes,
+                            }}
+                            viewer={{
+                              hasDisliked: announcement.viewer.hasLiked,
+                              hasDisliked: announcement.viewer.hasDisliked,
+                            }}
+                          />
                         </div>
                       </div>
                     </li>

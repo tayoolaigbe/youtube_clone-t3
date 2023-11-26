@@ -75,9 +75,114 @@ export const announcementRouter = createTRPCRouter({
             ...announcement,
             likes,
             dislikes,
+            viewer,
           };
         }),
       );
       return { announcements: announcementsWithEngagements, user };
+    }),
+  addLikeAnnouncement: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existingLike = await ctx.prisma.announcementEngagement.findMany({
+        where: {
+          announcementId: input.id,
+          userId: input.userId,
+          engagementType: EngagementType.LIKE,
+        },
+      });
+      const existingDislike = await ctx.prisma.announcementEngagement.findMany({
+        where: {
+          announcementId: input.id,
+          userId: input.userId,
+          engagementType: EngagementType.DISLIKE,
+        },
+      });
+      if (existingDislike.length > 0) {
+        await ctx.prisma.announcementEngagement.deleteMany({
+          where: {
+            announcementId: input.id,
+            userId: input.userId,
+            engagementType: EngagementType.DISLIKE,
+          },
+        });
+      }
+      if (existingLike.length > 0) {
+        const deleteLike = await ctx.prisma.announcementEngagement.deleteMany({
+          where: {
+            announcementId: input.id,
+            userId: input.userId,
+            engagementType: EngagementType.LIKE,
+          },
+        });
+        return deleteLike;
+      } else {
+        const like = await ctx.prisma.announcementEngagement.create({
+          data: {
+            announcementId: input.id,
+            userId: input.userId,
+            engagementType: EngagementType.LIKE,
+          },
+        });
+        return like;
+      }
+    }),
+  addDislikeAnnouncement: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        userId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existingDislike = await ctx.prisma.announcementEngagement.findMany({
+        where: {
+          announcementId: input.id,
+          userId: input.userId,
+          engagementType: EngagementType.DISLIKE,
+        },
+      });
+      const existingLike = await ctx.prisma.announcementEngagement.findMany({
+        where: {
+          announcementId: input.id,
+          userId: input.userId,
+          engagementType: EngagementType.LIKE,
+        },
+      });
+
+      if (existingLike.length > 0) {
+        await ctx.prisma.announcementEngagement.deleteMany({
+          where: {
+            announcementId: input.id,
+            userId: input.userId,
+            engagementType: EngagementType.LIKE,
+          },
+        });
+      }
+      if (existingDislike.length > 0) {
+        const deleteDislike =
+          await ctx.prisma.announcementEngagement.deleteMany({
+            where: {
+              announcementId: input.id,
+              userId: input.userId,
+              engagementType: EngagementType.DISLIKE,
+            },
+          });
+        return deleteDislike;
+      } else {
+        const dislike = await ctx.prisma.announcementEngagement.create({
+          data: {
+            announcementId: input.id,
+            userId: input.userId,
+            engagementType: EngagementType.DISLIKE,
+          },
+        });
+        return dislike;
+      }
     }),
 });
