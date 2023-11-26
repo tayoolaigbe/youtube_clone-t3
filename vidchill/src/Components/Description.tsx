@@ -6,7 +6,7 @@ const Description = ({
   length,
   border,
 }: {
-  text: string;
+  text: string | null;
   length: number;
   border?: boolean;
 }) => {

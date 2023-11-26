@@ -26,6 +26,7 @@ const ProfileVideos: NextPage = () => {
       return (
         <>
           <ErrorMessage
+            icon="GreenPlay"
             message="No Videos Uploaded"
             description="Click to upload new video. You have yet to upload a video."
           >
