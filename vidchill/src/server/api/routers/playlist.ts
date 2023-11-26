@@ -8,7 +8,7 @@ import {
 } from "~/server/api/trpc";
 
 export const playlistRouter = createTRPCRouter({
-  getPlaylistByTitle: publicProcedure
+  getPlaylistsByTitle: publicProcedure
     .input(
       z.object({
         title: z.string(),
@@ -37,8 +37,8 @@ export const playlistRouter = createTRPCRouter({
       if (rawPlaylist === null || rawPlaylist === undefined) {
         rawPlaylist = await ctx.prisma.playlist.create({
           data: {
-            title: input.title,
             userId: input.userId,
+            title: input.title,
           },
           include: {
             user: true,

@@ -1,7 +1,5 @@
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import { title } from "process";
 import { LoadingMessage, ErrorMessage } from "~/Components/ErrorMessage";
 import Layout from "~/Components/Layout";
 import { PlaylistPage } from "~/Components/PlaylistComponent";
@@ -10,7 +8,7 @@ import { api } from "~/utils/api";
 const History: NextPage = () => {
   const { data: sessionData } = useSession();
   const QueryTitle = "History" as string;
-  const { data, isLoading, error } = api.playlist.getPlaylistByTitle.useQuery({
+  const { data, isLoading, error } = api.playlist.getPlaylistsByTitle.useQuery({
     title: QueryTitle,
     userId: sessionData?.user.id as string,
   });
