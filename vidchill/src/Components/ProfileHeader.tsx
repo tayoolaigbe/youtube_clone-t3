@@ -15,10 +15,6 @@ const ProfileHeader = () => {
   const { userId } = router.query;
   const { data: sessionData } = useSession();
 
-  if (userId === sessionData?.user.id) {
-    console.log("This is your profile");
-  }
-
   const { data, isLoading, error } = api.user.getChannelById.useQuery({
     id: userId as string,
     viewerId: sessionData?.user?.id as string,

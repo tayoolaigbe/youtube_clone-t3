@@ -6,8 +6,13 @@ import { UserImage, Layout, ProfileHeader } from "~/Components/Component";
 import { api } from "~/utils/api";
 import moment from "moment";
 import AnnouncementButton from "~/Components/Buttons/AnnouncementButton";
+import { useState } from "react";
 
 const ProfileAnnouncements: NextPage = () => {
+  const [announcementInput, setAnnouncementInput] = useState("");
+  const addAnnouncementMutation =
+    api.announcement.addAnnouncement.useMutation();
+
   const router = useRouter();
   const { userId } = router.query;
   const { data: sessionData } = useSession();
@@ -19,6 +24,23 @@ const ProfileAnnouncements: NextPage = () => {
 
   const announcements = data?.announcements;
   const errorTypes = !data || data.announcements?.length === 0 || error;
+
+  const addAnnouncement = (input: { userId: string; message: string }) => {
+    addAnnouncementMutation.mutate(input, {
+      onSuccess: () => {
+        void refetch();
+        setAnnouncementInput("");
+      },
+    });
+  };
+
+  const handleAnnouncementSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    addAnnouncement({
+      userId: sessionData ? sessionData?.user.id : ("none" as string),
+      message: announcementInput,
+    });
+  };
 
   const Error = () => {
     if (isLoading) {
@@ -51,6 +73,33 @@ const ProfileAnnouncements: NextPage = () => {
       <Layout>
         <>
           <ProfileHeader />
+          {userId == sessionData?.user.id ? (
+            <form onSubmit={handleAnnouncementSubmit}>
+              <div className=" relative mt-2 flex flex-row gap-2">
+                <div className="w-full">
+                  <textarea
+                    name="announcement"
+                    id="announcement"
+                    onChange={(e) => setAnnouncementInput(e.target.value)}
+                    placeholder="Add an Announcement"
+                    value={announcementInput}
+                    rows={4}
+                    className="block w-full rounded-md border-0 p-4 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+                <div className="flex-shrink-0">
+                  <button
+                    type="submit"
+                    className="inline-flex items-center rounded-md bg-primary-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+                  >
+                    Post
+                  </button>
+                </div>
+              </div>
+            </form>
+          ) : (
+            ""
+          )}
           {errorTypes ? (
             <Error />
           ) : (
