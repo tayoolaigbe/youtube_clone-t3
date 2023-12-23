@@ -284,4 +284,15 @@ export const videoRouter = createTRPCRouter({
 
       return publishVideo;
     }),
+  deleteVideo: protectedProcedure
+    .input(z.object({ id: z.string(), userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const video = await checkVideoOwnership(ctx, input.id, input.userId);
+      const deleteVideo = await ctx.prisma.video.delete({
+        where: {
+          id: video.id,
+        },
+      });
+      return deleteVideo;
+    }),
 });
