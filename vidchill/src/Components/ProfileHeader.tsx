@@ -22,7 +22,7 @@ const ProfileHeader = () => {
 
   const channel = data?.user;
   const viewer = data?.viewer;
-  const errorTypes = !channel || !viewer || error || !data;
+  const errorTypes = !channel || !viewer || error;
 
   const tabs = [
     {
@@ -77,7 +77,7 @@ const ProfileHeader = () => {
     <>
       <Head>
         <title>{channel?.name ? channel.name + " VidChill Channel" : ""}</title>
-        <meta name="description" content={channel?.description || ""} />
+        <meta name="description" content={channel?.description ?? ""} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {errorTypes ? (
