@@ -11,7 +11,11 @@ import {
   GreenHeart,
 } from "~/Components/Icons/GreenIcons";
 import { Thumbnail } from "~/Components/Thumbnail";
-import { PublishedButton, DeleteButton } from "~/Components/Buttons/Buttons";
+import {
+  PublishedButton,
+  DeleteButton,
+  EditButton,
+} from "~/Components/Buttons/Buttons";
 
 const Dashboard: NextPage = () => {
   const { data: sessionData } = useSession();
@@ -179,7 +183,7 @@ const Dashboard: NextPage = () => {
                                     videoId={video.id}
                                     refetch={refetch}
                                   />
-                                  {/* <EditButton
+                                  <EditButton
                                     video={{
                                       id: video?.id || "",
                                       title: video?.title ?? "",
@@ -187,8 +191,7 @@ const Dashboard: NextPage = () => {
                                       thumbnailUrl: video?.thumbnailUrl ?? "",
                                     }}
                                     refetch={refetch}
-                                  /> */}{" "}
-                                  Edit Button
+                                  />
                                 </div>
                               </td>
                             </tr>
