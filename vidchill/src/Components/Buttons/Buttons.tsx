@@ -6,3 +6,4 @@ export { default as AnnouncementButton } from "./AnnouncementButton";
 export { default as PublishedButton } from "./PublishedButton";
 export { default as DeleteButton } from "./DeleteButton";
 export { EditButton } from "./EditButton";
+export { UploadButton } from "./UploadButton";
