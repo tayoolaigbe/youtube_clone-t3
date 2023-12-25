@@ -58,11 +58,11 @@ export default function PublishedButton({ video }: PublishedButtonProps) {
       <td className="whitespace-nowrap px-3 py-5 text-sm text-gray-500">
         {userChoice.publish ? (
           <span className="inline-flex items-center rounded-full border  border-success-700 px-2 py-1 text-xs font-medium text-success-700">
-            Published
+            Publish
           </span>
         ) : (
           <span className="inline-flex items-center rounded-full border  border-warning-700 px-2 py-1 text-xs font-medium text-warning-700">
-            Unpublished
+            Unpublish
           </span>
         )}
       </td>

@@ -1,11 +1,15 @@
+import { api } from "~/utils/api";
 import { Plus } from "../Icons/Icons";
 import Button from "./Button";
 import { Transition, Dialog } from "@headlessui/react";
 import React, { useState, useRef, Fragment } from "react";
+import { useSession } from "next-auth/react";
+import { env } from "~/env.mjs";
 
 export function UploadButton({ refetch }: { refetch: () => Promise<unknown> }) {
   const [open, setOpen] = useState(false);
   const [uploadedVideo, setUploadedVideo] = useState<File | null>(null);
+  const { data: sessionData } = useSession();
 
   const handleClick = () => {
     setOpen(true);
@@ -17,8 +21,52 @@ export function UploadButton({ refetch }: { refetch: () => Promise<unknown> }) {
     }
   };
 
+  const addVideoUpdateMutation = api.video.createVideo.useMutation();
+
+  const cloudinaryName = env.NEXT_PUBLIC_CLOUDINARY_NAME;
   const handleSubmit = () => {
-    console.log("Submit");
+    type UploadResponse = {
+      secure_url: string;
+    };
+
+    const videoData = {
+      userId: sessionData?.user.id as string,
+      videoUrl: "",
+    };
+
+    const formData = new FormData();
+    formData.append("upload_preset", "user_upload");
+
+    if (uploadedVideo) {
+      formData.append("file", uploadedVideo);
+    }
+
+    fetch(
+      "https://api.cloudinary.com/v1_1/" + cloudinaryName + "/video/upload",
+
+      {
+        method: "POST",
+        body: formData,
+      },
+    )
+      .then((response) => response.json() as Promise<UploadResponse>)
+      .then((data) => {
+        if (data.secure_url !== undefined) {
+          const newVideoData = {
+            ...videoData,
+            ...(data.secure_url && { videoUrl: data.secure_url }),
+          };
+          addVideoUpdateMutation.mutate(newVideoData, {
+            onSuccess: () => {
+              setOpen(false);
+              void refetch();
+            },
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("An error occured:", error);
+      });
   };
 
   return (

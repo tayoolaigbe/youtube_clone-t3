@@ -44,6 +44,8 @@ export function EditButton({ video, refetch }: EditButtonProps) {
     }));
   };
 
+  const cloudinaryName = env.NEXT_PUBLIC_CLOUDINARY_NAME;
+
   const handleSubmit = () => {
     type UploadResponse = {
       secure_url: string;
@@ -60,9 +62,7 @@ export function EditButton({ video, refetch }: EditButtonProps) {
     formData.append("upload_preset", "user_upload");
     formData.append("file", croppedImage as string);
     fetch(
-      "https://api.cloudinary.com/v1_1/" +
-        env.NEXT_PUBLIC_CLOUDINARY_NAME +
-        "/image/upload",
+      "https://api.cloudinary.com/v1_1/" + cloudinaryName + "/image/upload",
 
       {
         method: "POST",
