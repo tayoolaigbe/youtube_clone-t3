@@ -319,4 +319,16 @@ export const videoRouter = createTRPCRouter({
       });
       return updatedVideo;
     }),
+  createVideo: protectedProcedure
+    .input(z.object({ userId: z.string(), videoUrl: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const video = await ctx.prisma.video.create({
+        data: {
+          userId: input.userId,
+          videoUrl: input.videoUrl,
+          publish: false,
+        },
+      });
+      return video;
+    }),
 });
