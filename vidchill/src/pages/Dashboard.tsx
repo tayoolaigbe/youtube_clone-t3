@@ -37,7 +37,7 @@ const Dashboard: NextPage = () => {
       return (
         <ErrorMessage
           icon="GreenPlay"
-          message="Error loading Channel"
+          message="Error loading Channel."
           description="Sorry there is an error at this time."
         />
       );
